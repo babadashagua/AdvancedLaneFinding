@@ -21,5 +21,5 @@ The goals / steps of this project are the following:
 
 I use OpenCV functions to calculate the correct camera matrix and distortion coefficients using the calibration chessboard image 'calibration1.jpg'. The original image (left) and undistorted image (right) are shown below (images are in the folder output_images).
 <p float="left">
-  <img src="/output_images/calibration1_undistorted_comparison.png" width="800" title="Fig. 1 Camera calibration"/>
+  <img src="/output_images/calibration1_undistorted.png" width="800" title="Fig. 1 Camera calibration"/>
 </p>
