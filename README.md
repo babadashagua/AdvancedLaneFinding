@@ -42,3 +42,10 @@ I project the lane area to a birds-eye view using OpenCV functions. This procedu
 <p float="left">
   <img src="/output_images/test4_warped_image.png" width="800" title="Fig. 4 perspective transformation"/>
 </p>
+
+### 4. Lane Line Identification
+
+I use histogram peaks to find the bottom starting point of the left and the right lane lines. I take a histogram along all the columns in the lower half of the birds-eye view image. I add up the pixel values along each column in the image, and the two most prominent peaks in the histogram indicate the x-position of the base of the lane lines. From the two starting points, I use two sliding windows placed around each line centers to find the lane line pixels (histogram peaks and sliding window approach implemented by the function find_lane_pixels). After finding all pixels belonging to each line through the sliding window approach, I fit a polynomial to each line (implemented by the function fit_polynomial). The image below shows sliding windows and fitted ploynomials of each line.
+<p float="left">
+  <img src="/output_images/test4_slidingwindow_fit.png" width="800" title="Fig. 5 sliding window and polynomial fit"/>
+</p>
