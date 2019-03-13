@@ -53,4 +53,6 @@ I use histogram peaks to find the bottom starting point of the left and the righ
 ### 5. Curvature and Vehicle Position
 
 The curvature of lane lines are calculated using the following equation:
+\begin{equation}
 R_{curve}
+\end{equation}
