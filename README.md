@@ -26,4 +26,4 @@ I use OpenCV functions to calculate the correct camera matrix and distortion coe
 
 ### 2. Creating Thresholded Binary Image
 
-I tried four thresholding methods: sobel operator along x direction, magnitude of the gradient, direction of the gradient, and s channel threshold from HLS color space. 
+I tried four thresholding methods: sobel operator along x direction, magnitude of the gradient, direction of the gradient, and s channel threshold from HLS color space. Finally, I use a combination of sobel operator along x direction and s channel threshold to create the thresholded binary image. 
