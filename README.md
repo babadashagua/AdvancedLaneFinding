@@ -26,8 +26,19 @@ I use OpenCV functions to calculate the correct camera matrix and distortion coe
 
 ### 2. Creating Thresholded Binary Image
 
-I tried four thresholding methods: sobel operator along x direction, magnitude of the gradient, direction of the gradient, and s channel threshold from HLS color space. Finally, I use a combination of sobel operator along x direction (left) and s channel threshold (right) to create the thresholded binary image. Images are in the folder output_images (test4_sobel_thresh_img.png, test4_s_channle_thresh_img.png, test4_combine_img.png). 
+I tried four thresholding methods: sobel operator along x direction, magnitude of the gradient, direction of the gradient, and s channel threshold from HLS color space. Finally, I use a combination of sobel operator along x direction (left) and s channel threshold (right) to create the thresholded binary image. Images are in the folder output_images (test4_sobel_thresh_img.png, test4_s_channle_thresh_img.png, test4_combine_img.png). Thresholded image creation is implemented by the functions abs_sobel_thresh and s_channel_threshold in the project code, and combination of the thresholded images is implemeted in the mainstream of the video processing to obtain a combined binary image named binary_combine.
 <p float="left">
-  <img src="/output_images/test4_sobel_thresh_img.png" width="400" description="Fig. 2 sobel x direction"/>
+  <img src="/output_images/test4_sobel_thresh_img.png" width="400" title="Fig. 2 sobel x direction"/>
   <img src="/output_images/test4_s_channle_thresh_img.png" width="400" title="Fig. 2 s channel thresholded"/>
+</p>
+The combined thresholded binary image is:
+<p float="left">
+  <img src="/output_images/test4_combine_img.png" width="800" title="Fig. 3 combined thresholded binary image"/>
+</p>
+
+### 3. Perspective Transformation ("birds-eye view")
+
+I project the lane area to a birds-eye view using OpenCV functions. This procedure is implemented by the funciton warped_img in the project code. The left image below is the lane area after masking unnecessary details out, and the right image below is the warped image after perspective transformation. The result is named test4_warped_image.png in the output_images folder.
+<p float="left">
+  <img src="/output_images/test4_warped_image.png" width="800" title="Fig. 4 perspective transformation"/>
 </p>
