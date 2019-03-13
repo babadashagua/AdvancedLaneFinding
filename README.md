@@ -60,7 +60,7 @@ where A and B are the coefficients of fitted polynomials. The y values of the im
 
 The vehicle position with respect to the center is evaluated by calculating the difference between the center of the image and the center between two lane lines. Assuming the camera is placed at the center of the vehicle, then the vehicle position is the center of the image, which is image.shape[1]//2. The center between two lane lines in birds-eye view can be determined. Its projection coordinates in the original image can be calculated via:
 <p float="left">
-  <img src="/assist_imgs/perspective_transform.png" width="300" title="Equ. 2 inverse perspective transformation"/>
+  <img src="/assist_imgs/perspective_transform.png" width="450" title="Equ. 2 inverse perspective transformation"/>
 </p>
 This is how the OpenCV implements perspective transform for each pixel.
 The position of the vehicle is the difference between the 2 x positions. The direction (left or right) depends on the sign of the difference. Vehicle position estimation is calculated by the function image_marking. This function also marks calculated curvatures and vehicle position on the image. The image below shows calculated curvatures (left and right) and vehicle positions and mark them on the image (test4_final_result.png in the folder output_images). 
