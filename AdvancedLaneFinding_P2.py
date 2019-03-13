@@ -120,7 +120,7 @@ def s_channel_threshold(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
     s_binary = np.zeros_like(s_channel)
     s_binary[(s_channel >= s_thresh[0]) & (s_channel <= s_thresh[1])] = 1
     # Stack each channel
-#    color_binary = np.dstack(( np.zeros_like(sxbinary), sxbinary, s_binary)) * 255
+    # color_binary = np.dstack(( np.zeros_like(sxbinary), sxbinary, s_binary)) * 255
     s_combine = np.zeros_like(s_channel)
     s_combine[(sxbinary == 1) | (s_binary == 1)] = 1
     return s_combine
@@ -199,7 +199,7 @@ def find_lane_pixels(binary_warped, line_class):
         # Identify window boundaries in x and y (and right and left)
         win_y_low = binary_warped.shape[0] - (window+1)*window_height
         win_y_high = binary_warped.shape[0] - window*window_height
-        ### TO-DO: Find the four below boundaries of the window ###
+        
         win_xleft_low = leftx_current - margin  # Update this
         win_xleft_high = leftx_current + margin  # Update this
         win_xright_low = rightx_current - margin  # Update this
@@ -220,7 +220,6 @@ def find_lane_pixels(binary_warped, line_class):
         left_lane_inds.append(good_left_inds)
         right_lane_inds.append(good_right_inds)
         
-        ### TO-DO: If you found > minpix pixels, recenter next window ###
         ### (`right` or `leftx_current`) on their mean position ###
         if len(good_left_inds) > minpix:
             leftx_current = (np.mean(nonzerox[good_left_inds])).astype(int)
@@ -288,7 +287,7 @@ def fit_polynomial(binary_warped, line_class):
     else:
         leftx, lefty, rightx, righty = find_lane_pixels_prior(binary_warped, line_class)
 
-    ### TO-DO: Fit a second order polynomial to each using `np.polyfit` ###
+    # fit a second order polynomial to each using `np.polyfit` ###
     left_fit = np.polyfit(lefty, leftx, 2)
     right_fit = np.polyfit(righty, rightx, 2)
     
@@ -430,8 +429,9 @@ def sanity_check(ploty, left_fit, right_fit, line_class):
     dif_min_mid = dif_mid - dif_min
     dif_min_max = dif_max - dif_min
     dif_mid_max = dif_max - dif_mid
-    
+    # margin for the difference between lane distances
     margin = 30
+    # margin for the lane distance
     margin_width = 500
     
     frame_tol = 3
