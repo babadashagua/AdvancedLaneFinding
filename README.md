@@ -19,7 +19,7 @@ The goals / steps of this project are the following:
 
 ### 1. Camera Calibration
 
-I use OpenCV functions to calculate the correct camera matrix and distortion coefficients using the calibration chessboard image 'calibration1.jpg'. The original image (left) and undistorted image (right) are shown below (images are in the folder output_images).
+I use OpenCV functions to calculate the correct camera matrix and distortion coefficients using the calibration chessboard image 'calibration1.jpg' (implemented by the function camera_cal and img_undistort). The original image (left) and undistorted image (right) are shown below (images are in the folder output_images).
 <p float="left">
   <img src="/output_images/calibration1_undistorted.png" width="800" title="Fig. 1 Camera calibration"/>
 </p>
@@ -49,3 +49,8 @@ I use histogram peaks to find the bottom starting point of the left and the righ
 <p float="left">
   <img src="/output_images/test4_slidingwindow_fit.png" width="800" title="Fig. 5 sliding window and polynomial fit"/>
 </p>
+
+### 5. Curvature and Vehicle Position
+
+The curvature of lane lines are calculated using the following equation:
+R_{curve}
