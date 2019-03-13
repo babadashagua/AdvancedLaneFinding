@@ -15,7 +15,7 @@ import time
 
 def camera_cal(image):
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
-#    image = mpimg.imread('camera_cal/calibration1.jpg')
+
     objp = np.zeros((5*9,3), np.float32)
     objp[:,:2] = np.mgrid[0:9, 0:5].T.reshape(-1,2)
     
@@ -50,8 +50,9 @@ def img_undistort(mtx, dist, img):
     return undist
 
 def abs_sobel_thresh(img, orient='x', sobel_kernel=3, thresh=(0, 255)): # thresh=(20, 100)
-    # Calculate directional gradient
-    # Apply threshold
+    '''
+    Calculate directional gradient， apply threshold
+    '''
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     if orient == 'x':
         sobel = cv2.Sobel(gray, cv2.CV_64F, 1,0, ksize=sobel_kernel)
@@ -67,8 +68,9 @@ def abs_sobel_thresh(img, orient='x', sobel_kernel=3, thresh=(0, 255)): # thresh
     return grad_binary
 
 def mag_thresh(image, sobel_kernel=3, mag_thresh=(0, 255)):
-    # Calculate gradient magnitude
-    # Apply threshold
+    '''
+    Calculate gradient magnitude, apply threshold
+    '''
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     sobelx = cv2.Sobel(gray, cv2.CV_64F, 1,0, ksize=sobel_kernel)
     sobely = cv2.Sobel(gray, cv2.CV_64F, 0,1, ksize=sobel_kernel)
@@ -82,8 +84,9 @@ def mag_thresh(image, sobel_kernel=3, mag_thresh=(0, 255)):
     return mag_binary
 
 def dir_threshold(image, sobel_kernel=3, thresh=(0, np.pi/2)):
-    # Calculate gradient direction
-    # Apply threshold
+    '''
+    Calculate gradient direction， apply threshold
+    '''
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     sobelx = cv2.Sobel(gray, cv2.CV_64F, 1,0, ksize=sobel_kernel)
     sobely = cv2.Sobel(gray, cv2.CV_64F, 0,1, ksize=sobel_kernel)
@@ -97,11 +100,13 @@ def dir_threshold(image, sobel_kernel=3, thresh=(0, np.pi/2)):
     return dir_binary
 
 def s_channel_threshold(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
+    '''
+    Calculate color threshold use s channel from HSL color space
+    '''
     img = np.copy(img)
-    # Convert to HLS color space and separate the V channel
+    # Convert to HSL color space and separate the S channel
     hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
     s_channel = hls[:,:,1]
-    s_channel = hls[:,:,2]
     # Sobel x
     sobelx = cv2.Sobel(s_channel, cv2.CV_64F, 1, 0) # Take the derivative in x
     abs_sobelx = np.absolute(sobelx) # Absolute x derivative to accentuate lines away from horizontal
@@ -121,8 +126,7 @@ def s_channel_threshold(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
     return s_combine
 
 def region_of_interest(img, vertices):
-    
-    #defining a blank mask to start with
+   
     mask = np.zeros_like(img)   
     
     #defining a 3 channel or 1 channel color to fill the mask with depending on the input image
@@ -139,9 +143,11 @@ def region_of_interest(img, vertices):
     masked_image = cv2.bitwise_and(img, mask)
     return masked_image
 
-# input: thresholded image
+
 def warped_img(img):
-    
+    '''
+    input: thresholded image, perform perspective transformation to get birds-eye view
+    '''
     img_shape = img.shape
     src = np.float32([[200, img_shape[0]],[570, 460],[620, 460],[1200, img_shape[0]]])
     offset = 200
@@ -153,6 +159,9 @@ def warped_img(img):
     return warped, Minv
 
 def find_lane_pixels(binary_warped, line_class):
+    '''
+    Use histogram peaks and sliding window to find lane pixels
+    '''
     # Take a histogram of the bottom half of the image
     histogram = np.sum(binary_warped[binary_warped.shape[0]//2:,:], axis=0)
     # Create an output image to draw on and visualize the result
@@ -247,6 +256,9 @@ def find_lane_pixels(binary_warped, line_class):
     return leftx, lefty, rightx, righty #, out_img
 
 def find_lane_pixels_prior(binary_warped, line_class):
+    '''
+    Use the previous polynomial to skip the sliding window
+    '''
     margin = 100
     
     left_fit = line_class.current_fit[0]
@@ -288,29 +300,11 @@ def fit_polynomial(binary_warped, line_class):
         line_class.current_fit[1] = right_fit
     # Generate x and y values for plotting
     ploty = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0])
-#    try:
-#        left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
-#        right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
-#    except TypeError:
-#        # Avoids an error if `left` and `right_fit` are still none or incorrect
-#        print('The function failed to fit a line!')
-#        left_fitx = 1*ploty**2 + 1*ploty
-#        right_fitx = 1*ploty**2 + 1*ploty
-#
-#    ## Visualization ##
-#    # Colors in the left and right lane regions
-#    out_img[lefty, leftx] = [255, 0, 0]
-#    out_img[righty, rightx] = [0, 0, 255]
-#
-#    # Plots the left and right polynomials on the lane lines
-#    plt.plot(left_fitx, ploty, color='yellow')
-#    plt.plot(right_fitx, ploty, color='yellow')
-#
-#    return out_img
 
     return ploty, left_fit, right_fit
 
 def fit_polynomial_pts(ploty, left_fit, right_fit):
+    
     left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
     
@@ -356,6 +350,9 @@ def measure_curvature_meters(binary_warped, line_class):
     return left_curverad, right_curverad
 
 def lane_area_drawn(undist, warped_img, Minv, line_class):
+    '''
+    Draw lane area on the original image
+    '''
     img_shape = warped_img.shape
     
     warp_zero = np.zeros_like(warped_img).astype(np.uint8)
@@ -386,6 +383,9 @@ def lane_area_drawn(undist, warped_img, Minv, line_class):
     return result, midpoint_bird
 
 def image_marking(result, Minv, midpoint_bird, curvature):
+    '''
+    Mark lane curvatures and vehicle position from the center on each frame 
+    '''
     img_shape = result.shape
     y_max = img_shape[0]-1
     midpoint_raw = int((Minv[0][0]*midpoint_bird + Minv[0][1]*y_max + Minv[0][2])/(Minv[2][0]*midpoint_bird + Minv[2][1]*y_max + Minv[2][2]))
@@ -409,7 +409,7 @@ def image_marking(result, Minv, midpoint_bird, curvature):
 
 def sanity_check(ploty, left_fit, right_fit, line_class):
     '''
-    
+    Check the distance between the detected lane lines at bottom, middle and top positions
     '''
     y_min = np.min(ploty)
     y_mid = np.median(ploty)
@@ -475,8 +475,6 @@ class Line():
         self.detected = False  
         # failure times 
         self. failure_time = 0
-        # x values of the last n fits of the line
-        self.recent_xfitted = [] 
         #average x values of the fitted line over the last n iterations
         self.bestx = None     
         #polynomial coefficients averaged over the last n iterations
@@ -487,16 +485,6 @@ class Line():
         # recent polynomial coefficients
         self.recent_fit_left = []
         self.recent_fit_right = []
-        #radius of curvature of the line in some units
-        self.radius_of_curvature = None 
-        #distance in meters of vehicle center from the line
-        self.line_base_pos = None 
-        #difference in fit coefficients between last and new fits
-        self.diffs = np.array([0,0,0], dtype='float') 
-        #x values for detected line pixels
-        self.allx = None
-        #y values for detected line pixels
-        self.ally = None  
 
 lane_det = Line()
 #img_dist = mpimg.imread('test_images/test6.jpg')
@@ -509,12 +497,12 @@ out = cv2.VideoWriter('output_videos/project_video_lane_drawn_usingprior_sanity_
                       fourcc, 25.0, (1280, 720)) 
 
 mtx, dist = camera_cal(image_cal)
-counter = 0
+
 while video_input.isOpened():
     
     ret, img_dist = video_input.read()
     if ret:
-#        print(counter)
+
         undist = img_undistort(mtx, dist, img_dist)
         sobel_thresh_img = abs_sobel_thresh(undist, thresh=(20, 100))
         schannel_img = s_channel_threshold(undist)
@@ -533,7 +521,6 @@ while video_input.isOpened():
         result, midpoint_bird = lane_area_drawn(undist, warped, Minv, lane_det)
         result_mark = image_marking(result, Minv, midpoint_bird, curvature)
         
-#        counter += 1
         out.write(result_mark)
     else:
         break
@@ -543,15 +530,7 @@ out.release()
 print('Finished')
 end = time.time()
 print('Processing time: ', end-start)
-#scipy.misc.imsave('output_images/test6_lane_area_drawn.png', result)
 
-#f, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 9))
-#f.tight_layout()
-#ax1.imshow(masked_img)
-#ax1.set_title('Masked Image', fontsize=20)
-#ax2.imshow(warped_img)
-#ax2.set_title('Warped Image', fontsize=20)
-#plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
 
 
 
