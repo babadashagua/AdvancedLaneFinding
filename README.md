@@ -84,3 +84,10 @@ The following is a gif that shows partial result. This link leads to the full vi
 <p float="left">
   <img src="project_video_lane_finding_part.gif" width="800" title="Fig. 7 project video"/>
 </p>
+
+### 8. Discussion
+
+Problem 1: using n past measurements to smooth detection results helps to avoid detection jumps, but it also introduce slow convergence. As shown in the processed project video, sometimes there is a small mismatch between the detection lane area and the practical lane area.
+
+Problem 2: when the illumination changes fast or the curvature of the road change drastically, the detection tends to fail more. I have tried my developed pipeline on the challenge_video and the harder_challenge_video, the results are terrible. I am thinking to use the S channel only or combined with other thresholded binary images to tackle this issue.
+
