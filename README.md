@@ -82,5 +82,5 @@ Smoothing: to avoid detections jumping around from frame to frame, I take an ave
 
 The following is a gif that shows partial result. This link leads to the full video after processing the project vidoe with the developed pipeline: https://youtu.be/wzTiqRVlH-Q (file that exceeds 25MB is not allowed on Github).
 <p float="left">
-  <img src="/output_video/project_video_lane_finding_part.gif" width="800" title="Fig. 7 project video"/>
+  <img src="project_video_lane_finding_part.gif" width="800" title="Fig. 7 project video"/>
 </p>
