@@ -62,8 +62,25 @@ The vehicle position with respect to the center is evaluated by calculating the 
 <p float="left">
   <img src="/assist_imgs/perspective_transform.png" width="450" title="Equ. 2 inverse perspective transformation"/>
 </p>
-This is how the OpenCV implements perspective transform for each pixel.
+Where M is the transformation matrix that project pixels from birds-eye view back to the original image. This is how the OpenCV implements perspective transform for each pixel.
 The position of the vehicle is the difference between the 2 x positions. The direction (left or right) depends on the sign of the difference. Vehicle position estimation is calculated by the function image_marking. This function also marks calculated curvatures and vehicle position on the image. The image below shows calculated curvatures (left and right) and vehicle positions and mark them on the image (test4_final_result.png in the folder output_images). 
 <p float="left">
   <img src="/output_images/test4_final_result.png" width="800" title="Fig. 6 test4 final result"/>
+</p>
+
+### 6. Warp the Detected Lane Boundaries back onto the Original Image
+The detected lanes, curvature, and vehicle position from center are marked on the image shown above.
+
+### 7. Pipeline to Process the Project Video
+I apply the developed functions to process the project video. I make some modifications on the pipeline for video processing:
+
+Tracking: instead of using sliding window approach for all frames, I use searching from prior when the detected lane change is within a range. This recudes processing time on each frame.
+
+Sanity check: this check evaluate whether current lane detection is correct or not. If current detection is incorrect (fails to pass the sanity check), the current lane detection is replaced by the average of several past detections (in this work I use average of coefficients of 3 most recent fitted polynomials). If incorrect detection occurs for more than n frames (in this work n = 3), the sliding window approach is implemeted for lane search. The sanity check is implemented by comparing the lane line distance at bottom, middle, and top positions. If all the errors between each two of the three distances are within a range (in this work, the margin is 30 pixels, and the sanity check is performed on warped image), the lane detection is considered as correct. In addition, the distance between two lane line should be always large than 500 pixels (on warped image) to avoid narrow lane line detection (distance between two lane lines less than 30 pixels, which is definitely wrong). Sanity check is implemented by the sanity_check function.
+
+Smoothing: to avoid detections jumping around from frame to frame, I take an average over n past measurements to obtain the lane position. In this work, n = 3.
+
+The following is a gif that shows partial result. This link leads to the full video after processing the project vidoe with the developed pipeline: https://youtu.be/wzTiqRVlH-Q (file that exceeds 25MB is not allowed on Github).
+<p float="left">
+  <img src="/output_images/project_video_lane_finding_part.gif" width="800" title="Fig. 7 project video"/>
 </p>
